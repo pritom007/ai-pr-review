@@ -1,18 +1,12 @@
 import os
-import sys
-import base64
-import requests
 from openai import OpenAI
 import github3
 
 def get_pr_diff(github_token, repo_name, pr_number):
     gh = github3.login(token=github_token)
     owner, repo_name = repo_name.split('/')
-    print("Owner:", owner, "Repo:", repo_name)
     repo = gh.repository(owner, repo_name)
     pr = repo.pull_request(pr_number)
-    print("PR:", pr)
-    
     # Get comparison between base and head
     comparison = repo.compare_commits(pr.base.sha, pr.head.sha)
     diff_text = ""

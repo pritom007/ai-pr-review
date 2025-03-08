@@ -1,6 +1,6 @@
 name: 'AI Pull Request Review'
-description: 'Automated PR reviews using LLMs via LangChain'
-author: 'Your Name'
+description: 'Automated PR reviews using LLMs'
+author: 'Pritom Kumar Mondal'
 
 inputs:
   api-key:
@@ -25,3 +25,8 @@ inputs:
 runs:
   using: 'docker'
   image: 'Dockerfile'
+
+# (Optional) Add branding if desired:
+# branding:
+#   icon: 'comment-discussion'
+#   color: 'blue'
