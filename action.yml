@@ -1,0 +1,27 @@
+name: 'AI Pull Request Review'
+description: 'Automated PR reviews using LLMs via LangChain'
+author: 'Your Name'
+
+inputs:
+  api-key:
+    description: 'API key for the LLM provider'
+    required: true
+  model-name:
+    description: 'Model name to use for review'
+    default: 'gpt-4'
+  base-url:
+    description: 'Base URL for the LLM API (optional)'
+    required: false
+  temperature:
+    description: 'Model temperature (0-2)'
+    default: '0.7'
+  max-tokens:
+    description: 'Maximum response tokens'
+    default: "1000"
+  language:
+    description: 'Review language'
+    default: 'English'
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
