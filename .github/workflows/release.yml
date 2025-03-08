@@ -17,15 +17,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Required for semantic-release to analyze commit history
+          fetch-depth: 0  # Important: semantic-release needs full git history.
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'  # Semantic-release requires Node.js >=18
+          node-version: '18'
 
       - name: Install semantic-release and plugins
-        run: npm install semantic-release @semantic-release/git @semantic-release/changelog @semantic-release/github
+        run: |
+          npm install semantic-release \
+            @semantic-release/changelog \
+            @semantic-release/git \
+            @semantic-release/github \
+            @semantic-release/release-notes-generator \
+            @semantic-release/commit-analyzer
 
       - name: Run semantic-release
         env:
