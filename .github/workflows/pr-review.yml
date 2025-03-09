@@ -16,11 +16,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run AI PR Review
-        uses: pritom007/ai-pr-review@v1
+        uses: pritom007/ai-pr-review@v1.0.1
         with:
           api-key: ${{ secrets.INPUT_API_KEY }}
-          model-name: 'gpt-4' # you can use any other LLM model
-          base-url: 'https://api.openai.com' # you can use deepseek, gorq, or any other LLM provider
+          model-name: 'llama-3.3-70b-versatile' # you can use any other LLM model
+          base-url: 'https://api.groq.com/openai/v1' # you can use deepseek, gorq, or any other LLM provider
           temperature: '0.7'
           max-tokens: '1000' # Optional
           language: 'English'
