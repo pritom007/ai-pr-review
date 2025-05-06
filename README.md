@@ -95,15 +95,57 @@ Set the llm model api key in your github secrets as `INPUT_API_KEY`. Also make s
 | temperature  | ❌       | 0.7                    | 0 (Precise) ↔ 2 (Creative)    |
 | max-tokens   | ❌       | 1000                   | Limit of response length      |
 | language     | ❌       | English                | Language for the review       |
+| custom-chunk-prompt | ❌ | -                  | Custom prompt for analyzing code chunks |
+| custom-summary-prompt | ❌ | -                | Custom prompt for generating final summary |
 
 ### Advanced Usage
 
+#### Custom Prompts
+
+You can customize the prompts used for code review by providing your own prompts. This allows you to:
+- Focus on specific aspects of code review
+- Use your team's preferred review format
+- Add domain-specific requirements
+- Customize the output format
+
+Example with custom prompts:
+
 ```yaml
-with:
-  system-prompt: "Act as a principal engineer at a leading tech company"
-  review-focus: "security,performance,readability"
+name: AI Code Review
+on: [pull_request]
+
+jobs:
+  ai-review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: pritom007/ai-pr-review@v1
+        with:
+          api-key: ${{ secrets.INPUT_API_KEY }}
+          model-name: "llama3-70b-8192"
+          base-url: "https://api.groq.com/openai/v1"
+          custom-chunk-prompt: |
+            Review the following code changes with focus on:
+            1. Security vulnerabilities
+            2. Performance optimizations
+            3. Code style consistency
+            
+            Format findings as:
+            - [SEVERITY] [TYPE] Line X: Description
+          custom-summary-prompt: |
+            Generate a security-focused summary:
+            1. List all security findings
+            2. Group by vulnerability type
+            3. Include remediation steps
+            
+            Format as:
+            ## Security Findings
+            ### [Vulnerability Type]
+            - [Severity] Description (Line X)
 ```
-(To be done)
+
 ## Example Output 📝
 
 ## .github/workflows 
