@@ -14,6 +14,92 @@ MAX_CHUNK_TOKENS = 6000
 MAX_SUMMARY_TOKENS = 3000
 MIN_FILE_TOKENS = 200
 
+# Default prompts
+DEFAULT_CHUNK_PROMPT = """You are an experienced code reviewer. Review the following code changes thoroughly:
+
+1. Code Quality & Best Practices:
+   - Check for SOLID principles adherence
+   - Look for code smells and anti-patterns
+   - Verify naming conventions and readability
+   - Assess code duplication and DRY violations
+   - Review function/method complexity and length
+
+2. Security & Safety:
+   - Identify potential security vulnerabilities
+   - Check for proper input validation
+   - Look for unsafe data handling
+   - Verify authentication/authorization checks
+   - Review error handling and logging practices
+
+3. Performance & Scalability:
+   - Analyze algorithm efficiency
+   - Check for resource leaks
+   - Review database query patterns
+   - Look for potential bottlenecks
+   - Assess memory usage patterns
+
+4. Testing & Maintainability:
+   - Verify test coverage
+   - Check for testability issues
+   - Review documentation quality
+   - Assess code modularity
+   - Look for maintainability concerns
+
+Format your findings as:
+- [SEVERITY: HIGH/MEDIUM/LOW] [CATEGORY] File:line - Description
+  - Impact: Explain the potential impact
+  - Suggestion: Provide specific improvement suggestions
+  - Example: Show a code example if relevant
+
+Focus on actionable feedback and specific improvements."""
+
+DEFAULT_SUMMARY_PROMPT = """As a senior code reviewer, create a comprehensive review summary:
+
+1. Overview:
+   - Summarize the main changes and their purpose
+   - Highlight critical areas that need attention
+   - Identify patterns across multiple files
+
+2. Key Findings:
+   - Group issues by severity and category
+   - Prioritize critical security and performance issues
+   - Highlight architectural concerns
+   - Note positive patterns and good practices
+
+3. Recommendations:
+   - Provide actionable improvement steps
+   - Suggest specific refactoring opportunities
+   - Recommend additional testing scenarios
+   - List potential security hardening measures
+
+Format the summary as:
+## Overview
+Brief summary of changes and key concerns
+
+## Critical Issues
+### [Category]
+- [SEVERITY] Description
+  - Impact: [Impact description]
+  - Location: [File:line]
+  - Recommendation: [Specific suggestion]
+
+## Code Quality
+### [File]
+- [SEVERITY] [Type] Line X: Description
+  - Current: [Code snippet]
+  - Suggested: [Improved code example]
+
+## Security & Performance
+### [Category]
+- [SEVERITY] Description
+  - Risk: [Risk assessment]
+  - Mitigation: [Specific steps]
+
+## Positive Patterns
+- [Pattern] - [Why it's good]
+  - Example: [Code snippet]
+
+Focus on providing clear, actionable feedback that helps improve code quality."""
 
 def get_pr_diff(github_token: str, repo_name: str, pr_number: int) -> List[Dict]:
     """Retrieve PR diff with validation"""
@@ -144,33 +230,8 @@ async def main():
         'model_name': os.getenv('INPUT_MODEL_NAME', 'gpt-4'),
         'temperature': float(os.getenv('INPUT_TEMPERATURE', 0.7)),
         'max_tokens': int(os.getenv('INPUT_MAX_TOKENS', 1000)),
-        'chunk_prompt': """Analyze THESE SPECIFIC CODE CHANGES from a pull request:
-- Focus ONLY on the provided diff
-- Ignore examples from other contexts
-- Verify if suggestions apply to THESE CHANGES
-
-Review for:
-1. Code quality & security IN THESE LINES
-2. Cross-file interactions IN THIS DIFF
-3. Service boundaries AFFECTED HERE
-4. Data flow changes SHOWN BELOW
-5. Error handling IN PRESENTED CODE
-
-Format with:
-- [SEVERITY] [CATEGORY] File:line - Description
-- SPECIFIC references to provided code
-- NO GENERIC ADVICE""",
-        'summary_prompt': """Synthesize reviews into FINAL REPORT:
-1. Group by COMPONENT FROM ACTUAL FILES
-2. List issues found IN PROVIDED DIFFS ONLY
-3. Remove hypothetical suggestions
-4. Include EXACT CODE REFERENCES
-5. Highlight ONLY PRESENT ISSUES
-
-Format as:
-## [Component] 
-### [File]
-- [Priority] [Type] Line X: Description (Code Snippet)"""
+        'chunk_prompt': os.getenv('INPUT_CUSTOM_CHUNK_PROMPT', DEFAULT_CHUNK_PROMPT),
+        'summary_prompt': os.getenv('INPUT_CUSTOM_SUMMARY_PROMPT', DEFAULT_SUMMARY_PROMPT)
     }
     
     tokenizer = tiktoken.get_encoding("cl100k_base")

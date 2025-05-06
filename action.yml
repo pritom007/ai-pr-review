@@ -30,6 +30,12 @@ inputs:
   language:
     description: 'Review language'
     default: 'English'
+  custom-chunk-prompt:
+    description: 'Custom prompt for analyzing code chunks'
+    required: false
+  custom-summary-prompt:
+    description: 'Custom prompt for generating final summary'
+    required: false
 
 runs:
   using: 'docker'
@@ -44,6 +50,8 @@ runs:
     INPUT_TEMPERATURE: ${{ inputs.temperature }}
     INPUT_MAX_TOKENS: ${{ inputs.max-tokens }}
     INPUT_LANGUAGE: ${{ inputs.language }}
+    INPUT_CUSTOM_CHUNK_PROMPT: ${{ inputs.custom-chunk-prompt }}
+    INPUT_CUSTOM_SUMMARY_PROMPT: ${{ inputs.custom-summary-prompt }}
 
 branding:
   icon: 'code'       # Official GitHub icons: code, commit, pull-request, issue, security, actions, packages, discussions, projects, releases
